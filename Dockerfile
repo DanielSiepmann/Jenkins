@@ -4,8 +4,14 @@ FROM jenkins:latest
 # As we derive from jenkins, we have to switch back to root for setup
     USER root
 
+# Update system
+    RUN apt-get -y update
+
+# For debugging and Convenience
+    RUN apt-get -y install vim
+
 # Install sphinx and pip
-    RUN apt-get -y update && apt-get -y install python-sphinx python-pip python-dev build-essential && \
+    RUN apt-get -y install python-sphinx python-pip python-dev build-essential && \
         pip install --upgrade pip && pip install --upgrade virtualenv
 
 # Install requirements for pip Pillow
@@ -25,5 +31,16 @@ FROM jenkins:latest
     COPY plugins.txt /usr/share/jenkins/plugins.txt
     RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
 
+# Install PHP specific packages
+    RUN apt-get -y install php5-cli
+    RUN mkdir -p /usr/share/jenkins/ref/bin/phpbins/ && \
+        curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar -o /usr/share/jenkins/ref/bin/phpbins/phpcs && \
+        chmod ug+x /usr/share/jenkins/ref/bin/phpbins/phpcs
+
+# Provide build commands
+    RUN mkdir -p /usr/share/jenkins/ref/bin/build/commands
+    COPY phpcs.sh /usr/share/jenkins/ref/bin/build/commands/phpcs.sh
+
 # Switch back to original user
+    RUN chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
     USER jenkins
