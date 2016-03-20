@@ -1,0 +1,4 @@
+git-client 1.19.6
+scm-api 1.0
+git 2.4.3
+checkstyle 3.45
