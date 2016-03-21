@@ -38,8 +38,8 @@ FROM jenkins:latest
         chmod ug+x /usr/share/jenkins/ref/bin/phpbins/phpcs
 
 # Provide build commands
-    RUN mkdir -p /usr/share/jenkins/ref/bin/build/commands
-    COPY phpcs.sh /usr/share/jenkins/ref/bin/build/commands/phpcs.sh
+    # RUN mkdir -p /usr/share/jenkins/ref/bin/build/commands
+    COPY bin /usr/share/jenkins/ref/bin
 
 # Switch back to original user
     RUN chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
